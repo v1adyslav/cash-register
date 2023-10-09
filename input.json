@@ -1,0 +1,23 @@
+{
+  "products":
+  [
+    {
+      "code": "GR1",
+      "name": "Green Tea",
+      "price": 3.11,
+      "currency": "euro"
+    },
+    {
+      "code": "SR1",
+      "name": "Strawberries",
+      "price": 5.0,
+      "currency": "euro"
+    },
+    {
+      "code": "CF1",
+      "name": "Coffee",
+      "price": 11.23,
+      "currency": "euro"
+    }
+  ]
+}
