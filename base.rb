@@ -28,14 +28,36 @@ file = File.read("./#{INPUT_FILE}")
 data = JSON.parse(file)
 
 
-# require 'pry'
+require 'pry'
 products = data['products']
 products_array = []
+products_code_hash = {}
+products_count = {}
 
+i = 0
 products.each do |product|
   new_product = Product.new(product['code'], product['name'], product['price'], product['currency'])
   products_array << new_product
+  products_code_hash[new_product.code] = i
+  products_count[new_product.code] = 0
   show_details(new_product)
+  i += 1
 end
 
+puts 'Add products to the basket. Enter each product by it\'s code and press Enter'
+puts "To finish add products type 'end'"
+basket = []
+
+while buf = Readline.readline('> ', true)
+  break if buf == 'end'
+
+  if products_code_hash[buf].nil?
+    puts 'There is no such product registered'
+  else
+    basket << buf
+    products_count[buf] += 1
+  end
+end
+
+puts "Basket is: #{basket.join(',')}"
 
