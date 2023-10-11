@@ -5,19 +5,31 @@
       "code": "GR1",
       "name": "Green Tea",
       "price": 3.11,
-      "currency": "euro"
+      "currency": "euro",
+      "discount": {
+        "count": 1,
+        "free": 1
+      }
     },
     {
       "code": "SR1",
       "name": "Strawberries",
       "price": 5.0,
-      "currency": "euro"
+      "currency": "euro",
+      "discount": {
+        "min_count": 3,
+        "absolute": 0.5
+      }
     },
     {
       "code": "CF1",
       "name": "Coffee",
       "price": 11.23,
-      "currency": "euro"
+      "currency": "euro",
+      "discount": {
+        "min_count": 3,
+        "percent": 0.3333
+      }
     }
   ]
 }

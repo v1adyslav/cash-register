@@ -6,6 +6,7 @@ require 'json'
 
 require_relative 'models/product'
 require_relative 'helpers/product_helper'
+require_relative 'services/calculate_basket_price'
 
 INPUT_FILE = 'input.json'
 
@@ -32,14 +33,12 @@ require 'pry'
 products = data['products']
 products_array = []
 products_code_hash = {}
-products_count = {}
 
 i = 0
 products.each do |product|
-  new_product = Product.new(product['code'], product['name'], product['price'], product['currency'])
+  new_product = Product.new(product['code'], product['name'], product['price'], product['currency'], product['discount'])
   products_array << new_product
   products_code_hash[new_product.code] = i
-  products_count[new_product.code] = 0
   show_details(new_product)
   i += 1
 end
@@ -55,9 +54,16 @@ while buf = Readline.readline('> ', true)
     puts 'There is no such product registered'
   else
     basket << buf
-    products_count[buf] += 1
   end
 end
 
 puts "Basket is: #{basket.join(',')}"
 
+# calculate basket price
+result = CalculateBasketPrice.call(basket, products_array, products_code_hash)
+unless result.success?
+  puts "Error message: #{result.message}"
+  exit
+end
+
+puts "Total price: #{result.price}#{get_currency_sign('euro')}"

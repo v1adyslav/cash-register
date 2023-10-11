@@ -11,3 +11,10 @@ def show_details(product)
 
   puts "Price: #{product.price}#{currency} \n\n"
 end
+
+def get_currency_sign(currency)
+  case currency
+  when 'euro'
+    '€'
+  end
+end
