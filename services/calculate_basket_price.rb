@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require_relative 'discount/calculate_free_discount'
+require_relative 'discount/calculate_absolute_discount'
+require_relative 'discount/calculate_percent_discount'
+
 class CalculateBasketPrice
   def initialize(basket, products_array, products_code_hash)
     @basket = basket
@@ -35,18 +39,12 @@ class CalculateBasketPrice
       sum_product = k * p
       discount = 0
 
-      if !product.count_discount.nil? && (k > product.count_discount)
-        discount = product.free_gift * p * 1
-      end
+      discount = CalculateFreeDiscount.call(product, k) unless product.count_discount.nil?
 
       unless product.min_count_discount.nil?
-        if !product.percent_discount.nil? && (k >= product.min_count_discount)
-          discount = product.percent_discount * p * k
-        end
+        discount = CalculatePercentDiscount.call(product, k) unless product.percent_discount.nil?
 
-        if !product.absolute_discount.nil? && (k >= product.min_count_discount)
-          discount = product.absolute_discount * k
-        end
+        discount = CalculateAbsoluteDiscount.call(product, k) unless product.absolute_discount.nil?
       end
 
       sum += sum_product - discount
