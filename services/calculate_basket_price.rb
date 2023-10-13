@@ -29,23 +29,23 @@ class CalculateBasketPrice
 
   def calculate
     products_count = {}
-    @products_code_hash.each { |k, v| products_count[k] = 0 }
+    @products_code_hash.each { |i, v| products_count[i] = 0 }
     @basket.each { |v| products_count[v] += 1 }
 
     sum = 0
     @products_array.each do |product|
-      k = products_count[product.code]
-      p = product.price
-      sum_product = k * p
+      count = products_count[product.code]
+      sum_product = count * product.price
       discount = 0
 
-      discount = CalculateFreeDiscount.call(product, k) unless product.count_discount.nil?
-
-      unless product.min_count_discount.nil?
-        discount = CalculatePercentDiscount.call(product, k) unless product.percent_discount.nil?
-
-        discount = CalculateAbsoluteDiscount.call(product, k) unless product.absolute_discount.nil?
-      end
+      discount = case product.discount_type
+                 when 'free'
+                   CalculateFreeDiscount.call(product, count)
+                 when 'absolute'
+                   CalculateAbsoluteDiscount.call(product, count)
+                 when 'percent'
+                   CalculatePercentDiscount.call(product, count)
+                 end
 
       sum += sum_product - discount
     end

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class CalculateAbsoluteDiscount
-  def initialize(product, k)
+  def initialize(product, count)
     @product = product
-    @k = k
+    @count = count
   end
 
   def self.call(*args)
@@ -13,9 +13,7 @@ class CalculateAbsoluteDiscount
   def call
     value = 0
 
-    if @k >= @product.min_count_discount
-      value = @product.absolute_discount * @k
-    end
+    value = @product.absolute_discount * @count if @count >= @product.min_count_discount
 
     value
   end

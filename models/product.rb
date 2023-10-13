@@ -2,6 +2,7 @@
 
 class Product
   attr_accessor :code, :name, :price, :currency,
+                :discount_type,
                 :count_discount, :free_gift,
                 :min_count_discount, :percent_discount, :absolute_discount
 
@@ -11,15 +12,17 @@ class Product
     @price = price
     @currency = currency
 
-    unless discount['count'].nil?
+    @discount_type = discount['type']
+    case discount['type']
+    when 'free'
       @count_discount = discount['count']
       @free_gift = discount['free']
-    end
-
-    unless discount['min_count'].nil?
+    when 'absolute'
       @min_count_discount = discount['min_count']
-      @absolute_discount = discount['absolute'] unless discount['absolute'].nil?
-      @percent_discount = discount['percent'] unless discount['percent'].nil?
+      @absolute_discount = discount['absolute']
+    when 'percent'
+      @min_count_discount = discount['min_count']
+      @percent_discount = discount['percent']
     end
   end
 end
