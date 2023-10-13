@@ -28,7 +28,6 @@ exit if buf == 'n'
 file = File.read("./#{INPUT_FILE}")
 data = JSON.parse(file)
 
-
 require 'pry'
 products = data['products']
 products_array = []
@@ -36,7 +35,8 @@ products_code_hash = {}
 
 i = 0
 products.each do |product|
-  new_product = Product.new(product['code'], product['name'], product['price'], product['currency'], product['discount'])
+  new_product = Product.new(product['code'], product['name'], product['price'], product['currency'],
+                            product['discount'])
   products_array << new_product
   products_code_hash[new_product.code] = i
   show_details(new_product)

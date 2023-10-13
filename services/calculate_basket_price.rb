@@ -29,7 +29,7 @@ class CalculateBasketPrice
 
   def calculate
     products_count = {}
-    @products_code_hash.each { |i, v| products_count[i] = 0 }
+    @products_code_hash.each { |i, _v| products_count[i] = 0 }
     @basket.each { |v| products_count[v] += 1 }
 
     sum = 0
