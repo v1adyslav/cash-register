@@ -5,14 +5,13 @@ require_relative 'discount/calculate_absolute_discount'
 require_relative 'discount/calculate_percent_discount'
 
 class CalculateBasketPrice
-  def initialize(basket, products_array, products_code_hash)
+  def initialize(basket, products_array)
     @basket = basket
     @products_array = products_array
-    @products_code_hash = products_code_hash
   end
 
-  def self.call(*args)
-    new(*args).call
+  def self.call(...)
+    new(...).call
   end
 
   def call
@@ -29,7 +28,7 @@ class CalculateBasketPrice
 
   def calculate
     products_count = {}
-    @products_code_hash.each { |i, _v| products_count[i] = 0 }
+    @products_array.each { |product| products_count[product.code] = 0 }
     @basket.each { |v| products_count[v] += 1 }
 
     sum = 0

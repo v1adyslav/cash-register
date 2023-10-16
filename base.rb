@@ -60,7 +60,7 @@ end
 puts "Basket is: #{basket.join(',')}"
 
 # calculate basket price
-result = CalculateBasketPrice.call(basket, products_array, products_code_hash)
+result = CalculateBasketPrice.call(basket, products_array)
 unless result.success?
   puts "Error message: #{result.message}"
   exit
