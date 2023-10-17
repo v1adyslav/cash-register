@@ -14,13 +14,14 @@ RSpec.describe CalculateBasketPrice, type: :service do
     end
     let(:products_array) { [product1, product2, product3] }
 
+    subject { described_class.call(basket, products_array) }
+
     context 'when one special condition works' do
       context 'basket is [GR1 GR1]' do
         let(:basket) { %w[GR1 GR1] }
 
         it 'checks price' do
-          result = CalculateBasketPrice.call(basket, products_array)
-
+          result = subject
           expect(result.success?).to be true
           expect(result.price).to eq(3.11)
         end
@@ -30,8 +31,7 @@ RSpec.describe CalculateBasketPrice, type: :service do
         let(:basket) { %w[GR1 GR2] }
 
         it 'has incorrect product code' do
-          result = CalculateBasketPrice.call(basket, products_array)
-
+          result = subject
           expect(result.success?).to be false
         end
       end
@@ -40,8 +40,7 @@ RSpec.describe CalculateBasketPrice, type: :service do
         let(:basket) { %w[SR1 SR1 GR1 SR1] }
 
         it 'checks price' do
-          result = CalculateBasketPrice.call(basket, products_array)
-
+          result = subject
           expect(result.success?).to be true
           expect(result.price).to eq(16.61)
         end
@@ -51,8 +50,7 @@ RSpec.describe CalculateBasketPrice, type: :service do
         let(:basket) { %w[GR1 CF1 SR1 CF1 CF1] }
 
         it 'checks price' do
-          result = CalculateBasketPrice.call(basket, products_array)
-
+          result = subject
           expect(result.success?).to be true
           expect(result.price).to eq(30.57)
         end
@@ -64,8 +62,7 @@ RSpec.describe CalculateBasketPrice, type: :service do
         let(:basket) { %w[SR1 SR1 GR1 SR1 GR1] }
 
         it 'checks price' do
-          result = CalculateBasketPrice.call(basket, products_array)
-
+          result = subject
           expect(result.success?).to be true
           expect(result.price).to eq(16.61)
         end
@@ -75,8 +72,7 @@ RSpec.describe CalculateBasketPrice, type: :service do
         let(:basket) { %w[GR1 CF1 SR1 CF1 CF1 GR1] }
 
         it 'checks price' do
-          result = CalculateBasketPrice.call(basket, products_array)
-
+          result = subject
           expect(result.success?).to be true
           expect(result.price).to eq(30.57)
         end
@@ -86,14 +82,12 @@ RSpec.describe CalculateBasketPrice, type: :service do
         let(:basket) { %w[GR1 CF1 SR1 CF1 CF1 SR1 SR1] }
 
         it 'checks price' do
-          result = CalculateBasketPrice.call(basket, products_array)
-
+          result = subject
           expect(result.success?).to be true
           expect(result.price).to eq(39.07)
         end
       end
     end
-
 
   end
 end
