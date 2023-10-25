@@ -11,10 +11,9 @@ To install required gems run the command:
 
 To run the app run the command:
 
-**ruby base.rb**
+**ruby init.rb**
 
 Products will be got from input.json file.
-To continue to show products and add to the basket press a key
 
 Add products to the basket. Enter each product by it's code and press Enter.
 To finish add products type 'end'.

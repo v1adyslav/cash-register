@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class CalculateFreeDiscount
-  def initialize(product, count)
+  def initialize(product, count, discount)
     @product = product
     @count = count
+    @discount = discount
   end
 
   def self.call(*args)
@@ -13,7 +14,7 @@ class CalculateFreeDiscount
   def call
     value = 0
 
-    value = @product.free_gift * @product.price * 1 if @count > @product.count_discount
+    value = @discount.value * @product.price * 1 if @count > @discount.count
 
     value
   end

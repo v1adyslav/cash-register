@@ -1,20 +1,16 @@
 RSpec.describe CalculateBasketPrice, type: :service do
   describe "#call" do
-    let(:product1) do
-      Product.new('GR1', 'Green Tea', 3.11, 'euro',
-                  { 'type' => 'free', 'count' => 1, 'free' => 1 })
-    end
-    let(:product2) do
-      Product.new('SR1', 'Strawberries', 5.0, 'euro',
-                  { 'type' => 'absolute', 'min_count' => 3, 'absolute' => 0.5 })
-    end
-    let(:product3) do
-      Product.new('CF1', 'Coffee', 11.23, 'euro',
-                  { 'type' => 'percent', 'min_count' => 3, 'percent' => 0.3333 })
-    end
-    let(:products_array) { [product1, product2, product3] }
+    let(:product1) { Product.new('GR1', 'Green Tea', 3.11, 'euro', Discount::FREE) }
+    let(:product2) { Product.new('SR1', 'Strawberries', 5.0, 'euro', Discount::ABSOLUTE) }
+    let(:product3) { Product.new('CF1', 'Coffee', 11.23, 'euro', Discount::PERCENT) }
+    let(:products_list) { { 'GR1' => product1, 'SR1' => product2, 'CF1' => product3 } }
 
-    subject { described_class.call(basket, products_array) }
+    let(:discount1) { Discount.new({ 'type' => Discount::FREE, 'count' => 1, 'value' => 1 }) }
+    let(:discount2) { Discount.new({ 'type' => Discount::ABSOLUTE, 'count' => 3, 'value' => 0.5 }) }
+    let(:discount3) { Discount.new({ 'type' => Discount::PERCENT, 'count' => 3, 'value' => 0.3333 }) }
+    let(:discounts_list) { { Discount::FREE => discount1, Discount::ABSOLUTE => discount2, Discount::PERCENT => discount3 } }
+
+    subject { described_class.call(basket, products_list, discounts_list) }
 
     context 'when one special condition works' do
       context 'basket is [GR1 GR1]' do

@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require_relative 'discount/calculate_free_discount'
-require_relative 'discount/calculate_absolute_discount'
-require_relative 'discount/calculate_percent_discount'
-
 class CalculateBasketPrice
-  def initialize(basket, products_array)
+  def initialize(basket, products_list, discounts_list)
     @basket = basket
-    @products_array = products_array
+    @products_list = products_list
+    @discount_list = discounts_list
   end
 
   def self.call(...)
@@ -28,25 +25,27 @@ class CalculateBasketPrice
 
   def calculate
     products_count = {}
-    @products_array.each { |product| products_count[product.code] = 0 }
+    @products_list.each { |code, product| products_count[code] = 0 }
     @basket.each { |v| products_count[v] += 1 }
 
     sum = 0
-    @products_array.each do |product|
+    @products_list.each do |code, product|
       count = products_count[product.code]
-      sum_product = count * product.price
-      discount = 0
+      discount = @discount_list[product.discount_type]
 
-      discount = case product.discount_type
-                 when 'free'
-                   CalculateFreeDiscount.call(product, count)
-                 when 'absolute'
-                   CalculateAbsoluteDiscount.call(product, count)
-                 when 'percent'
-                   CalculatePercentDiscount.call(product, count)
+      sum_product = count * product.price
+      discount_value = 0
+
+      discount_value = case product.discount_type
+                 when Discount::FREE
+                   CalculateFreeDiscount.call(product, count, discount)
+                 when Discount::ABSOLUTE
+                   CalculateAbsoluteDiscount.call(product, count, discount)
+                 when Discount::PERCENT
+                   CalculatePercentDiscount.call(product, count, discount)
                  end
 
-      sum += sum_product - discount
+      sum += sum_product - discount_value
     end
 
     sum.round(2)

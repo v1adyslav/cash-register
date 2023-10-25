@@ -1,69 +1,68 @@
 # frozen_string_literal: true
 
-# dependencies
 require 'readline'
 require 'json'
 
-require_relative 'models/product'
-require_relative 'helpers/product_helper'
-require_relative 'services/calculate_basket_price'
+class Base
+  INPUT_FILE = 'input.json'
 
-INPUT_FILE = 'input.json'
+  def self.cli
+    load_files
 
-puts '-----------------'
-puts "Products will be got from #{INPUT_FILE} file"
-puts 'Continue? Press the key (y/n)'
+    # read from file
+    puts "Products will be got from #{INPUT_FILE} file"
+    file = File.read("./#{INPUT_FILE}")
+    data = JSON.parse(file)
+    products = data['products']
+    discounts = data['discounts']
 
-# handle interruption by Ctrl^C command
-stty_save = `stty -g`.chomp
-trap('INT') do
-  system 'stty', stty_save
-  exit
-end
+    products_list = {}
+    discounts_list = {}
 
-buf = Readline.readline('> ', true)
-exit if buf == 'n'
+    # process products input data
+    products.each do |product|
+      new_product = Product.new(product['code'], product['name'], product['price'], product['currency'],
+                                product['discount'])
+      products_list[new_product.code] = new_product
+      show_details(new_product)
+    end
 
-# read from file
-file = File.read("./#{INPUT_FILE}")
-data = JSON.parse(file)
+    # process discounts input data
+    discounts.each { |discount| discounts_list[discount['type']] = Discount.new(discount) }
 
-require 'pry'
-products = data['products']
-products_array = []
-products_code_hash = {}
+    basket = []
+    add_products_to_basket(basket, products_list)
 
-i = 0
-products.each do |product|
-  new_product = Product.new(product['code'], product['name'], product['price'], product['currency'],
-                            product['discount'])
-  products_array << new_product
-  products_code_hash[new_product.code] = i
-  show_details(new_product)
-  i += 1
-end
+    # calculate basket price
+    result = CalculateBasketPrice.call(basket, products_list, discounts_list)
+    unless result.success?
+      puts "Error message: #{result.message}"
+      exit
+    end
 
-puts 'Add products to the basket. Enter each product by it\'s code and press Enter'
-puts "To finish add products type 'end'"
-basket = []
+    puts "Total price: #{result.price}#{get_currency_sign('euro')}"
+  end
 
-while buf = Readline.readline('> ', true)
-  break if buf == 'end'
+  def self.load_files
+    Dir["./models/**/*.rb"].each { |f| require f }
+    Dir["./services/**/*.rb"].each { |f| require f }
+    Dir["./helpers/**/*.rb"].each { |f| require f }
+  end
 
-  if products_code_hash[buf].nil?
-    puts 'There is no such product registered'
-  else
-    basket << buf
+  def self.add_products_to_basket(basket, products_list)
+    puts 'Add products to the basket. Enter each product by it\'s code and press Enter'
+    puts "To finish add products type 'end'"
+
+    while buf = Readline.readline('> ', true)
+      break if buf == 'end'
+
+      if products_list[buf].nil?
+        puts 'There is no such product registered'
+      else
+        basket << buf
+      end
+    end
+
+    puts "Basket is: #{basket.join(',')}"
   end
 end
-
-puts "Basket is: #{basket.join(',')}"
-
-# calculate basket price
-result = CalculateBasketPrice.call(basket, products_array)
-unless result.success?
-  puts "Error message: #{result.message}"
-  exit
-end
-
-puts "Total price: #{result.price}#{get_currency_sign('euro')}"

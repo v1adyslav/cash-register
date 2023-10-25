@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class CalculatePercentDiscount
-  def initialize(product, count)
+  def initialize(product, count, discount)
     @product = product
     @count = count
+    @discount = discount
   end
 
   def self.call(*args)
@@ -13,7 +14,7 @@ class CalculatePercentDiscount
   def call
     value = 0
 
-    value = @product.percent_discount * @product.price * @count if @count >= @product.min_count_discount
+    value = @discount.value * @product.price * @count if @count >= @discount.count
 
     value
   end
