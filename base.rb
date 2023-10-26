@@ -30,8 +30,15 @@ class Base
     # process discounts input data
     discounts.each { |discount| discounts_list[discount['type']] = Discount.new(discount) }
 
+    puts 'Add products to the basket. Enter each product by it\'s code and press Enter'
+    puts "To finish add products type 'end'"
     basket = []
-    add_products_to_basket(basket, products_list)
+    while buf = Readline.readline('> ', true)
+      break if buf == 'end'
+
+      add_product_to_basket(buf, basket, products_list)
+    end
+    puts "Basket is: #{basket.join(',')}"
 
     # calculate basket price
     result = CalculateBasketPrice.call(basket, products_list, discounts_list)
@@ -49,20 +56,11 @@ class Base
     Dir["./helpers/**/*.rb"].each { |f| require f }
   end
 
-  def self.add_products_to_basket(basket, products_list)
-    puts 'Add products to the basket. Enter each product by it\'s code and press Enter'
-    puts "To finish add products type 'end'"
-
-    while buf = Readline.readline('> ', true)
-      break if buf == 'end'
-
-      if products_list[buf].nil?
-        puts 'There is no such product registered'
-      else
-        basket << buf
-      end
+  def self.add_product_to_basket(code, basket, products_list)
+    if products_list[code].nil?
+      puts 'There is no such product registered'
+    else
+      basket << code
     end
-
-    puts "Basket is: #{basket.join(',')}"
   end
 end

@@ -16,6 +16,7 @@
 
 Dir["./services/**/*.rb"].sort.each { |file| require file }
 Dir["./models/**/*.rb"].sort.each { |file| require file }
+require './base'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
