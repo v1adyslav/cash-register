@@ -13,15 +13,21 @@ RSpec.describe CalculateFreeDiscount, type: :service do
       end
 
       it 'has discount' do
-        count = 2
+        count = 3
         value = described_class.call(product, count, discount)
         expect(value).to eq(3.11)
       end
 
       it 'has discount' do
-        count = 3
+        count = 4
         value = described_class.call(product, count, discount)
-        expect(value).to eq(3.11)
+        expect(value).to eq(6.22)
+      end
+
+      it 'has discount' do
+        count = 11
+        value = described_class.call(product, count, discount)
+        expect(value).to eq(5 * 3.11)
       end
 
       it 'incorrect data, no discount' do
@@ -50,13 +56,25 @@ RSpec.describe CalculateFreeDiscount, type: :service do
       it 'has discount' do
         count = 2
         value = described_class.call(product, count, discount)
-        expect(value).to eq(6.22)
+        expect(value).to eq(3.11)
       end
 
       it 'has discount' do
         count = 3
         value = described_class.call(product, count, discount)
         expect(value).to eq(6.22)
+      end
+
+      it 'has discount' do
+        count = 13
+        value = described_class.call(product, count, discount)
+        expect(value).to eq(8 * 3.11)
+      end
+
+      it 'has discount' do
+        count = 14
+        value = described_class.call(product, count, discount)
+        expect(value).to eq(9 * 3.11)
       end
     end
   end
